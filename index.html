@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Boy Japanese 🦊</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#E8303A;--red-light:#FDECEA;--red-mid:#F87171;
+  --ink:#1A0A0A;--ink2:#5C3D3D;--ink3:#9C7A7A;
+  --cream:#FFF8F0;--cream2:#FFF0E6;--cream3:#FFE4CC;
+  --gold:#D4960A;--gold-light:#FDF6E3;
+  --green:#1A6B3A;--green-light:#E6F4EC;
+  --blue:#1A4A8A;--blue-light:#E6EEFA;
+  --shadow:0 2px 16px rgba(26,10,10,.10);
+  --r:16px;
+}
+body{font-family:'Nunito',sans-serif;background:var(--cream);min-height:100vh;display:flex;justify-content:center;padding:0}
+.app{width:100%;max-width:420px;background:#fff;min-height:100vh;display:flex;flex-direction:column;position:relative;box-shadow:0 0 40px rgba(232,48,58,.08)}
+
+/* ===== SETUP ===== */
+.setup{padding:28px 20px 24px;display:flex;flex-direction:column;gap:14px;background:#fff}
+.logo{text-align:center;margin-bottom:4px}
+.kitsune-wrap{width:120px;height:120px;margin:0 auto;display:flex;align-items:center;justify-content:center}
+.kitsune-body{animation:bob 2.6s ease-in-out infinite}
+.kitsune-tail{animation:tailWag 1.8s ease-in-out infinite;transform-origin:60px 90px}
+.kitsune-ears{animation:earTwitch 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes tailWag{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+@keyframes earTwitch{0%,90%,100%{transform:rotate(0deg)}93%{transform:rotate(-4deg)}96%{transform:rotate(4deg)}}
+.logo h1{font-size:28px;font-weight:900;color:var(--ink);margin-top:10px;letter-spacing:-.5px}
+.logo h1 span{color:var(--red)}
+.logo p{font-size:13px;color:var(--ink3);margin-top:3px}
+.logo .jp-title{font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--red);margin-top:5px;font-weight:700;letter-spacing:.1em}
+.level-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lvl-btn{padding:12px 10px;border-radius:12px;border:2px solid var(--cream3);background:var(--cream);cursor:pointer;text-align:center;transition:all .2s;font-family:'Nunito',sans-serif}
+.lvl-btn:hover{border-color:var(--red-mid);background:var(--red-light)}
+.lvl-btn.on{border-color:var(--red);background:var(--red-light)}
+.lvl-btn .lv-icon{font-size:22px;display:block;margin-bottom:4px}
+.lvl-btn .lv-name{font-size:13px;font-weight:800;color:var(--ink)}
+.lvl-btn .lv-sub{font-size:10px;color:var(--ink3);margin-top:1px}
+.form-group{background:var(--cream);border:1.5px solid var(--cream3);border-radius:14px;padding:14px}
+.form-group label{font-size:11px;color:var(--ink3);display:block;margin-bottom:7px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group select{width:100%;font-size:14px;padding:10px 12px;border:1.5px solid var(--cream3);border-radius:10px;background:#fff;color:var(--ink);outline:none;font-family:'Nunito',sans-serif;transition:border .15s}
+.form-group input:focus,.form-group select:focus{border-color:var(--red)}
+.key-note{font-size:11px;color:var(--ink3);margin-top:6px}
+.btn-start{width:100%;padding:15px;border-radius:14px;border:none;background:var(--red);color:#fff;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;letter-spacing:.02em;box-shadow:0 4px 18px rgba(232,48,58,.30);transition:opacity .15s}
+.btn-start:active{opacity:.9}
+
+/* ===== MAIN ===== */
+.main{display:none;flex-direction:column;flex:1}
+.topbar{padding:10px 14px;background:#fff;border-bottom:2px solid var(--cream2);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.fox-av{width:38px;height:38px;border-radius:50%;background:var(--red-light);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid var(--cream3);flex-shrink:0}
+.topbar-info{flex:1;min-width:0}
+.topbar-info h2{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-info p{font-size:11px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif}
+.icon-btn{background:none;border:none;cursor:pointer;color:var(--ink3);padding:6px;border-radius:8px;font-size:18px;transition:all .15s;display:flex;align-items:center}
+.icon-btn:hover{background:var(--cream2);color:var(--red)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 14px 6px}
+.stat{background:var(--cream);border-radius:12px;padding:9px 6px;text-align:center;border:1.5px solid var(--cream3)}
+.stat-n{font-size:20px;font-weight:900;color:var(--ink)}
+.stat-l{font-size:10px;color:var(--ink3);margin-top:1px;font-weight:600}
+
+/* prog */
+.prog-wrap{padding:6px 14px 2px;background:#fff}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:4px;font-weight:700}
+.prog-track{height:6px;background:var(--cream2);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--red),#FF6B6B);border-radius:4px;transition:width .5s ease}
+
+/* mode tabs */
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:8px 14px 0;border-radius:12px;overflow:hidden;border:2px solid var(--cream3);background:var(--cream)}
+.mode-tab{padding:9px 8px;border:none;background:transparent;color:var(--ink3);font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s}
+.mode-tab.on{background:var(--red);color:#fff}
+
+/* topic tabs */
+.topic-wrap{padding:8px 14px 4px}
+.topic-lbl{font-size:10px;color:var(--ink3);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 13px;border-radius:20px;border:2px solid var(--cream3);background:#fff;color:var(--ink2);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:'Nunito',sans-serif}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+.chip:hover:not(.on){background:var(--red-light);border-color:var(--red-mid)}
+
+/* kana study panel */
+.kana-panel{margin:0 14px 8px;background:var(--cream);border:2px solid var(--cream3);border-radius:16px;padding:12px;display:none}
+.kana-panel.show{display:block}
+.kana-title{font-size:11px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.kana-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.kana-card{background:#fff;border:2px solid var(--cream3);border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .2s}
+.kana-card:hover{border-color:var(--red-mid);background:var(--red-light)}
+.kana-card.active{border-color:var(--red);background:var(--red-light)}
+.kana-card .kc-char{font-family:'Noto Sans JP',sans-serif;font-size:20px;font-weight:700;color:var(--ink);display:block}
+.kana-card .kc-rom{font-size:10px;color:var(--ink3);font-weight:700;margin-top:2px}
+.kana-tabs{display:flex;gap:6px;margin-bottom:8px}
+.kana-tab{flex:1;padding:6px;border-radius:8px;border:2px solid var(--cream3);background:#fff;font-size:11px;font-weight:800;cursor:pointer;font-family:'Noto Sans JP',sans-serif;color:var(--ink2);transition:all .15s}
+.kana-tab.on{background:var(--red);border-color:var(--red);color:#fff}
+
+/* chat */
+.chat{margin:0 14px 8px;background:var(--cream);border-radius:16px;border:2px solid var(--cream3);padding:12px;display:flex;flex-direction:column;gap:8px;min-height:200px;max-height:300px;overflow-y:auto}
+.bbl{max-width:86%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.6;word-break:break-word;font-family:'Nunito',sans-serif}
+.bbl .jp{font-family:'Noto Sans JP',sans-serif;font-size:13px;display:block;color:var(--ink);margin-bottom:2px}
+.bbl .rom{font-size:11px;color:var(--ink3);display:block}
+.bbl .meaning{font-size:11px;color:var(--blue);display:block;margin-top:2px}
+.bbl.ai{background:#fff;border:2px solid var(--cream3);color:var(--ink);align-self:flex-start;border-radius:4px 16px 16px 16px}
+.bbl.user{background:var(--red);color:#fff;align-self:flex-end;border-radius:16px 4px 16px 16px}
+.bbl.hint{background:var(--gold-light);color:#7A4F00;font-size:12px;align-self:flex-start;border-radius:4px 16px 16px 16px;border:2px solid #FCD34D}
+.bbl.good{background:var(--green-light);color:var(--green);font-size:12px;align-self:flex-start;border-radius:4px 16px 16px 16px;border:2px solid #6EE7B7}
+.bbl.try{background:#FFFBEB;color:#92400E;font-size:12px;align-self:flex-start;border-radius:4px 16px 16px 16px;border:2px solid #FCD34D}
+.bbl.err{background:var(--red-light);color:#991B1B;font-size:12px;align-self:flex-start;border-radius:4px 16px 16px 16px}
+.typing{display:flex;align-items:center;gap:5px;padding:10px 14px;background:#fff;border:2px solid var(--cream3);border-radius:4px 16px 16px 16px;align-self:flex-start}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ink3);animation:blink 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.spk-btn{background:none;border:none;cursor:pointer;color:var(--red);padding:0 0 0 5px;font-size:13px;opacity:.8;vertical-align:middle}
+
+/* input area */
+.input-area{padding:0 14px 8px;display:flex;flex-direction:column;gap:8px}
+.quick-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.q-btn{padding:9px 4px;border-radius:12px;border:2px solid var(--cream3);background:#fff;color:var(--ink2);font-size:11px;font-weight:700;cursor:pointer;text-align:center;line-height:1.4;transition:all .15s;font-family:'Nunito',sans-serif}
+.q-btn:hover{background:var(--red-light);border-color:var(--red-mid);color:var(--red)}
+.q-btn span{display:block;font-size:17px;margin-bottom:3px}
+.input-toggle{display:flex;gap:6px}
+.inp-btn{flex:1;padding:8px;border-radius:10px;border:2px solid var(--cream3);background:var(--cream);color:var(--ink3);font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s}
+.inp-btn.on{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.mic-btn{width:100%;padding:14px;border-radius:14px;border:2px solid var(--red);background:transparent;color:var(--red);font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Nunito',sans-serif;transition:all .15s}
+.mic-btn:hover{background:var(--red-light)}
+.mic-btn.rec{border-color:#EF4444!important;color:#EF4444!important;background:#FEF2F2!important}
+.mic-btn.rec .mic-ic{animation:pulse .75s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.type-row{display:flex;gap:8px}
+.type-input{flex:1;padding:11px 13px;border-radius:12px;border:2px solid var(--cream3);background:var(--cream);color:var(--ink);font-size:14px;outline:none;font-family:'Nunito',sans-serif;transition:border .15s}
+.type-input:focus{border-color:var(--red)}
+.send-btn{padding:11px 15px;border-radius:12px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s}
+.send-btn:active{opacity:.85}
+
+/* ===== PANELS ===== */
+.panel{display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;height:100%;background:#fff;z-index:100;flex-direction:column;overflow-y:auto}
+.panel.show{display:flex}
+.panel-header{padding:14px 16px;border-bottom:2px solid var(--cream2);display:flex;align-items:center;gap:12px;position:sticky;top:0;background:#fff;z-index:1}
+.panel-header h2{flex:1;font-size:15px;font-weight:900;color:var(--ink)}
+.close-btn{background:none;border:none;cursor:pointer;color:var(--ink3);font-size:22px;padding:4px;border-radius:8px}
+.panel-body{padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.report-card{background:var(--cream);border:2px solid var(--cream3);border-radius:14px;padding:14px}
+.report-card h3{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.04em}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1.5px solid var(--cream2);font-size:13px}
+.report-row:last-child{border:none}
+.report-row span:first-child{color:var(--ink2)}
+.report-row span:last-child{font-weight:800;color:var(--ink)}
+.history-item{background:#fff;border:2px solid var(--cream3);border-radius:10px;padding:9px 12px;font-size:12px;margin-bottom:6px}
+.history-item .hi-date{color:var(--ink3);font-size:11px;margin-bottom:3px;font-weight:700}
+.history-item .hi-jp{font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink)}
+
+/* badges */
+.badges-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.badge-card{background:var(--cream);border:2px solid var(--cream3);border-radius:14px;padding:12px;text-align:center}
+.badge-card.earned{background:var(--gold-light);border-color:#FCD34D}
+.badge-card .bc-ico{font-size:30px;margin-bottom:5px}
+.badge-card .bc-name{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:3px}
+.badge-card .bc-desc{font-size:10px;color:var(--ink3)}
+.badge-card.earned .bc-desc{color:#92400E}
+.footer-lnk{text-align:center;font-size:11px;color:var(--cream3);padding:6px 0 14px;cursor:pointer;text-decoration:underline}
+.earned-row{padding:2px 14px 6px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.earned-row::-webkit-scrollbar{display:none}
+.badge-chip{flex-shrink:0;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--cream2);color:var(--ink3);border:1.5px solid var(--cream3)}
+.badge-chip.earned{background:var(--gold-light);color:#7A4F00;border-color:#FCD34D}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SETUP -->
+<div class="setup" id="setupScreen">
+  <div class="logo">
+    <div class="kitsune-wrap">
+      <svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" width="120" height="130">
+        <!-- tail -->
+        <g class="kitsune-tail">
+          <ellipse cx="72" cy="95" rx="22" ry="12" fill="#FF8C42" transform="rotate(-30,72,95)"/>
+          <ellipse cx="70" cy="90" rx="14" ry="8" fill="#FFB380" transform="rotate(-30,70,90)"/>
+          <ellipse cx="65" cy="98" rx="16" ry="10" fill="#FF8C42" transform="rotate(10,65,98)"/>
+          <ellipse cx="63" cy="94" rx="10" ry="7" fill="#FFB380" transform="rotate(10,63,94)"/>
+          <!-- second tail hint -->
+          <ellipse cx="76" cy="100" rx="12" ry="7" fill="#E8703A" transform="rotate(-50,76,100)"/>
+        </g>
+        <!-- body -->
+        <g class="kitsune-body">
+          <!-- torso -->
+          <ellipse cx="60" cy="88" rx="24" ry="22" fill="#FF8C42"/>
+          <ellipse cx="60" cy="92" rx="16" ry="15" fill="#FFD6B8"/>
+          <!-- head -->
+          <ellipse cx="60" cy="55" rx="26" ry="24" fill="#FF8C42"/>
+          <!-- face/muzzle -->
+          <ellipse cx="60" cy="63" rx="13" ry="10" fill="#FFD6B8"/>
+          <!-- ears -->
+          <g class="kitsune-ears">
+            <polygon points="36,34 28,10 50,30" fill="#FF8C42"/>
+            <polygon points="38,33 32,16 48,30" fill="#FF6B6B"/>
+            <polygon points="84,34 92,10 70,30" fill="#FF8C42"/>
+            <polygon points="82,33 88,16 72,30" fill="#FF6B6B"/>
+          </g>
+          <!-- eyes -->
+          <ellipse cx="50" cy="52" rx="6" ry="6" fill="#fff"/>
+          <ellipse cx="70" cy="52" rx="6" ry="6" fill="#fff"/>
+          <ellipse cx="51" cy="53" rx="4" ry="4" fill="#1A0A0A"/>
+          <ellipse cx="71" cy="53" rx="4" ry="4" fill="#1A0A0A"/>
+          <ellipse cx="52" cy="52" rx="1.5" ry="1.5" fill="#fff"/>
+          <ellipse cx="72" cy="52" rx="1.5" ry="1.5" fill="#fff"/>
+          <!-- nose -->
+          <ellipse cx="60" cy="62" rx="3" ry="2" fill="#E8303A"/>
+          <!-- mouth -->
+          <path d="M55,66 Q60,70 65,66" stroke="#C0504A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- cheek blush -->
+          <ellipse cx="44" cy="60" rx="5" ry="3" fill="#FF6B6B" opacity="0.4"/>
+          <ellipse cx="76" cy="60" rx="5" ry="3" fill="#FF6B6B" opacity="0.4"/>
+          <!-- arms -->
+          <ellipse cx="36" cy="85" rx="8" ry="14" rx="8" fill="#FF8C42" transform="rotate(-15,36,85)"/>
+          <ellipse cx="84" cy="85" rx="8" ry="14" fill="#FF8C42" transform="rotate(15,84,85)"/>
+          <!-- paws -->
+          <ellipse cx="30" cy="96" rx="8" ry="6" fill="#FFD6B8"/>
+          <ellipse cx="90" cy="96" rx="8" ry="6" fill="#FFD6B8"/>
+          <!-- legs -->
+          <ellipse cx="50" cy="108" rx="9" ry="12" fill="#FF8C42"/>
+          <ellipse cx="70" cy="108" rx="9" ry="12" fill="#FF8C42"/>
+          <!-- feet -->
+          <ellipse cx="48" cy="120" rx="10" ry="5" fill="#FFD6B8"/>
+          <ellipse cx="72" cy="120" rx="10" ry="5" fill="#FFD6B8"/>
+          <!-- magic orb -->
+          <circle cx="60" cy="79" r="8" fill="#E8303A" opacity="0.9"/>
+          <circle cx="60" cy="79" r="5" fill="#FF6B6B" opacity="0.7"/>
+          <circle cx="57" cy="77" r="2" fill="#fff" opacity="0.8"/>
+        </g>
+      </svg>
+    </div>
+    <h1>Boy <span>Japanese</span></h1>
+    <p>Luyện tiếng Nhật cùng Kitsune 🦊</p>
+    <div class="jp-title">日本語を一緒に学ぼう！</div>
+  </div>
+
+  <div class="form-group">
+    <label>🎓 Trình độ của bạn</label>
+    <div class="level-picker" id="levelPicker">
+      <button class="lvl-btn on" onclick="setLevel('beginner',this)">
+        <span class="lv-icon">🌱</span>
+        <div class="lv-name">Beginner</div>
+        <div class="lv-sub">Mới bắt đầu · Hiragana</div>
+      </button>
+      <button class="lvl-btn" onclick="setLevel('n5',this)">
+        <span class="lv-icon">📗</span>
+        <div class="lv-name">N5 Level</div>
+        <div class="lv-sub">Cơ bản · Hội thoại đơn giản</div>
+      </button>
+      <button class="lvl-btn" onclick="setLevel('n4',this)">
+        <span class="lv-icon">📘</span>
+        <div class="lv-name">N4 Level</div>
+        <div class="lv-sub">Trung cấp · Giao tiếp thường ngày</div>
+      </button>
+      <button class="lvl-btn" onclick="setLevel('kids',this)">
+        <span class="lv-icon">🧒</span>
+        <div class="lv-name">Trẻ em</div>
+        <div class="lv-sub">8–12 tuổi · Vui vẻ, đơn giản</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>🔑 Claude API Key</label>
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+    <div class="key-note">🔒 Lưu trên thiết bị này, không gửi đâu ngoài Anthropic</div>
+  </div>
+  <div class="form-group">
+    <label>🔊 ElevenLabs API Key <span style="font-size:10px;color:#1A6B3A;font-weight:600">(giọng Nhật tự nhiên)</span></label>
+    <input type="password" id="elKey" placeholder="sk_..." autocomplete="off"/>
+    <div class="key-note">🔒 Để trống → dùng giọng máy Web Speech</div>
+  </div>
+  <div class="form-group">
+    <label>🎤 OpenAI API Key <span style="font-size:10px;color:#1A6B3A;font-weight:600">(mic Whisper)</span></label>
+    <input type="password" id="oaiKey" placeholder="sk-..." autocomplete="off"/>
+    <div class="key-note">🔒 Dùng Whisper STT — mic hoạt động trên iPhone, Android</div>
+  </div>
+  <div class="form-group">
+    <label>👤 Tên của bạn</label>
+    <input type="text" id="userName" placeholder="Ví dụ: Minh, An, Hà..." maxlength="20"/>
+  </div>
+  <button class="btn-start" onclick="startApp()">🦊 Bắt đầu học tiếng Nhật!</button>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainScreen">
+  <div class="topbar">
+    <div class="fox-av">🦊</div>
+    <div class="topbar-info">
+      <h2 id="tbName">Boy Japanese</h2>
+      <p id="tbSub">Beginner · Hiragana</p>
+    </div>
+    <button class="icon-btn" onclick="showPanel('badgesPanel')" title="Huy hiệu">🏆</button>
+    <button class="icon-btn" onclick="showPanel('parentPanel')" title="Báo cáo">📊</button>
+    <button class="icon-btn" onclick="goSettings()" title="Cài đặt">⚙️</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="sStars">0</div><div class="stat-l">⭐ Điểm</div></div>
+    <div class="stat"><div class="stat-n" id="sStreak">0</div><div class="stat-l">🔥 Streak</div></div>
+    <div class="stat"><div class="stat-n" id="sTurns">0</div><div class="stat-l">💬 Lượt</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-labels"><span id="progLbl">Tiến độ bài</span><span id="progPct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="earned-row" id="earnedBadgesRow"></div>
+
+  <!-- mode: conversation / kana -->
+  <div class="mode-tabs">
+    <button class="mode-tab on" id="tabConv" onclick="setMainMode('conv')">💬 Hội thoại</button>
+    <button class="mode-tab" id="tabKana" onclick="setMainMode('kana')">あ Bảng chữ</button>
+  </div>
+
+  <!-- topic chips -->
+  <div class="topic-wrap">
+    <div class="chips" id="chipBar"></div>
+  </div>
+
+  <!-- kana study panel -->
+  <div class="kana-panel" id="kanaPanel">
+    <div class="kana-title">Bảng chữ cái tiếng Nhật — nhấn để nghe phát âm</div>
+    <div class="kana-tabs">
+      <button class="kana-tab on" id="ktHira" onclick="setKanaType('hiragana')">ひらがな Hiragana</button>
+      <button class="kana-tab" id="ktKata" onclick="setKanaType('katakana')">カタカナ Katakana</button>
+    </div>
+    <div class="kana-grid" id="kanaGrid"></div>
+  </div>
+
+  <div class="chat" id="chatWrap"></div>
+
+  <div class="input-area">
+    <div class="quick-btns">
+      <button class="q-btn" onclick="doHint()"><span>💡</span>Gợi ý</button>
+      <button class="q-btn" onclick="doRepeat()"><span>🔊</span>Nghe lại</button>
+      <button class="q-btn" onclick="doSkip()"><span>⏭️</span>Bỏ qua</button>
+    </div>
+    <div class="input-toggle">
+      <button class="inp-btn on" id="mMic" onclick="setInputMode('mic')">🎤 Nói</button>
+      <button class="inp-btn" id="mType" onclick="setInputMode('type')">⌨️ Gõ</button>
+    </div>
+    <div id="micArea">
+      <button class="mic-btn" id="micBtn" onclick="handleMic()">
+        <span class="mic-ic">🎤</span>
+        <span id="micLbl">Nhấn để nói</span>
+      </button>
+    </div>
+    <div id="typeArea" style="display:none">
+      <div class="type-row">
+        <input class="type-input" type="text" id="typeInput" placeholder="Gõ tiếng Nhật hoặc romaji..." onkeydown="if(event.key==='Enter')sendTyped()"/>
+        <button class="send-btn" onclick="sendTyped()">Gửi ➤</button>
+      </div>
+    </div>
+  </div>
+  <span class="footer-lnk" onclick="goSettings()">Đổi tên / trình độ / API key</span>
+</div>
+
+<!-- BADGES PANEL -->
+<div class="panel" id="badgesPanel">
+  <div class="panel-header">
+    <h2>🏆 Huy hiệu của bạn</h2>
+    <button class="close-btn" onclick="hidePanel('badgesPanel')">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="badges-grid" id="badgesGrid"></div>
+  </div>
+</div>
+
+<!-- PARENT/REPORT PANEL -->
+<div class="panel" id="parentPanel">
+  <div class="panel-header">
+    <h2>📊 Báo cáo học tập</h2>
+    <button class="close-btn" onclick="hidePanel('parentPanel')">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="report-card">
+      <h3>📈 Buổi học hôm nay</h3>
+      <div class="report-row"><span>Chủ đề đang học</span><span id="rTopic">-</span></div>
+      <div class="report-row"><span>Tổng lượt</span><span id="rTurns">0</span></div>
+      <div class="report-row"><span>Câu tốt</span><span id="rGood">0</span></div>
+      <div class="report-row"><span>Điểm</span><span id="rStars">0 ⭐</span></div>
+      <div class="report-row"><span>Streak cao nhất</span><span id="rMaxStreak">0 🔥</span></div>
+      <div class="report-row"><span>Thời gian học</span><span id="rTime">0 phút</span></div>
+    </div>
+    <div class="report-card">
+      <h3>🏅 Tổng cộng</h3>
+      <div class="report-row"><span>Tổng điểm</span><span id="rTotalStars">0 ⭐</span></div>
+      <div class="report-row"><span>Số buổi học</span><span id="rSessions">0</span></div>
+      <div class="report-row"><span>Huy hiệu đạt</span><span id="rBadges">0 🏆</span></div>
+    </div>
+    <div class="report-card">
+      <h3>📝 Lịch sử gần đây</h3>
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+// CURRICULUM
+// =============================================
+const CURRICULUM = {
+  beginner: {
+    'じこしょうかい': {
+      label: '自己紹介', e: '👋',
+      s: `You are a warm friendly Japanese language tutor for a complete beginner who speaks Vietnamese. The topic is self-introduction (じこしょうかい). 
+Teach and converse using very simple Japanese. Always provide: the Japanese sentence, its romaji reading, and Vietnamese meaning.
+Format EVERY response like this:
+[Japanese] こんにちは！
+[Romaji] Konnichiwa!
+[Nghĩa] Xin chào!
+Then add a very short explanation in Vietnamese if needed, then ask a simple follow-up.
+Keep Japanese sentences under 8 words. Use hiragana + simple kanji with furigana in brackets. Be warm and encouraging. Never use markdown symbols.`
+    },
+    'かぞく': {
+      label: '家族', e: '👨‍👩‍👧',
+      s: `You are a warm Japanese tutor for a Vietnamese beginner. Topic: family (かぞく/家族).
+Format EVERY response:
+[Japanese] お母さんはいますか？
+[Romaji] Okaasan wa imasu ka?
+[Nghĩa] Bạn có mẹ không?
+Teach family vocabulary: お母さん、お父さん、兄弟 etc. Keep sentences short. Encourage always. Vietnamese explanations when needed.`
+    },
+    'かず': {
+      label: '数字', e: '🔢',
+      s: `You are a fun Japanese tutor for a Vietnamese beginner. Topic: numbers (かず/数字).
+Format EVERY response:
+[Japanese] いち、に、さん...
+[Romaji] Ichi, ni, san...
+[Nghĩa] Một, hai, ba...
+Teach numbers 1-100, counting, age. Make it fun with simple games. Ask them to count or say their age in Japanese.`
+    },
+    'たべもの': {
+      label: '食べ物', e: '🍜',
+      s: `You are an enthusiastic Japanese tutor for a Vietnamese beginner. Topic: food (たべもの/食べ物).
+Format EVERY response:
+[Japanese] すしが好きですか？
+[Romaji] Sushi ga suki desu ka?
+[Nghĩa] Bạn có thích sushi không?
+Teach food vocabulary, likes/dislikes. Connect Japanese food with Vietnamese food they know. Fun and encouraging.`
+    },
+    'いろ・かたち': {
+      label: '色・形', e: '🎨',
+      s: `You are a playful Japanese tutor for a Vietnamese beginner. Topic: colors and shapes (いろ・かたち).
+Format EVERY response:
+[Japanese] これは何色ですか？
+[Romaji] Kore wa nani-iro desu ka?
+[Nghĩa] Cái này màu gì?
+Teach colors (あか・あお・きいろ etc.) and shapes. Use descriptive examples from everyday life.`
+    }
+  },
+  n5: {
+    'にちじょう': {
+      label: '日常会話', e: '💬',
+      s: `You are a friendly Japanese conversation partner for a Vietnamese learner at JLPT N5 level. Topic: daily conversation (日常会話).
+Always provide 3 layers in your response:
+[Japanese] 今日は何をしましたか？
+[Romaji] Kyou wa nani wo shimashita ka?
+[Nghĩa] Hôm nay bạn đã làm gì?
+Use N5 grammar patterns (は、が、を、に、で particles; です・ます form; basic て-form). Correct gently. Sentences max 12 words. Conversational and natural.`
+    },
+    'がっこう': {
+      label: '学校', e: '🏫',
+      s: `You are a friendly Japanese conversation partner for JLPT N5 learner. Topic: school life (学校).
+Format:
+[Japanese] どの教科が好きですか？
+[Romaji] Dono kyouka ga suki desu ka?
+[Nghĩa] Bạn thích môn học nào?
+Cover school vocabulary, subjects, teachers, timetable. Use N5 patterns naturally.`
+    },
+    'かいもの': {
+      label: '買い物', e: '🛒',
+      s: `You are a friendly Japanese conversation partner for JLPT N5 learner. Topic: shopping (買い物).
+Format:
+[Japanese] これはいくらですか？
+[Romaji] Kore wa ikura desu ka?
+[Nghĩa] Cái này bao nhiêu tiền?
+Cover shopping phrases, prices, asking for items. Role-play as a shop. N5 level patterns.`
+    },
+    'てんき': {
+      label: '天気', e: '⛅',
+      s: `You are a friendly Japanese conversation partner for JLPT N5 learner. Topic: weather (天気).
+Format:
+[Japanese] 今日は寒いですね。
+[Romaji] Kyou wa samui desu ne.
+[Nghĩa] Hôm nay lạnh nhỉ.
+Discuss weather, seasons, compare with Vietnam. N5 adjectives (い・な adjectives). Natural conversation.`
+    },
+    'しゅみ': {
+      label: '趣味', e: '🎮',
+      s: `You are a friendly Japanese conversation partner for JLPT N5 learner. Topic: hobbies (趣味).
+Format:
+[Japanese] 趣味は何ですか？
+[Romaji] Shumi wa nan desu ka?
+[Nghĩa] Sở thích của bạn là gì?
+Discuss hobbies, free time, preferences. Use すき・きらい、～ことが好きです patterns. Genuinely curious about their interests.`
+    }
+  },
+  n4: {
+    'しごと': {
+      label: '仕事', e: '💼',
+      s: `You are a natural Japanese conversation partner for a Vietnamese learner at JLPT N4 level. Topic: work and career (仕事).
+Provide layered responses when introducing new vocabulary:
+[Japanese] どんな仕事をしていますか？
+[Romaji] Donna shigoto wo shite imasu ka?
+[Nghĩa] Bạn đang làm nghề gì?
+Use N4 patterns: て-form, potential form, giving/receiving verbs, conditionals (たら・ば). Natural flowing conversation. Correct mistakes thoughtfully.`
+    },
+    'りょこう': {
+      label: '旅行', e: '✈️',
+      s: `You are a fun Japanese conversation partner for JLPT N4 learner. Topic: travel (旅行).
+Use N4 grammar naturally. Provide vocabulary help in [Japanese]/[Romaji]/[Nghĩa] format when teaching new words.
+Talk about travel experiences, dream destinations, comparing Japan and Vietnam. Engaging and curious.`
+    },
+    'けんこう': {
+      label: '健康', e: '🏃',
+      s: `You are a caring Japanese conversation partner for JLPT N4 learner. Topic: health and lifestyle (健康).
+Use N4 patterns naturally. Teach relevant vocabulary in layered format when needed.
+Discuss health habits, exercise, food, Vietnamese vs Japanese health culture. Genuine interest in their lifestyle.`
+    },
+    'テクノロジー': {
+      label: 'テクノロジー', e: '💻',
+      s: `You are a tech-savvy Japanese conversation partner for JLPT N4 learner. Topic: technology (テクノロジー).
+Use N4 grammar. Provide vocab help in layered format when introducing new terms.
+Discuss internet, smartphones, social media, AI. Share opinions about technology in Japan vs Vietnam. Curious and engaging.`
+    },
+    'ぶんか': {
+      label: '文化', e: '⛩️',
+      s: `You are a thoughtful Japanese conversation partner for JLPT N4 learner. Topic: Japanese culture (文化).
+Use N4 grammar naturally. Teach cultural vocabulary in layered format.
+Discuss anime, manga, festivals, food culture, comparing with Vietnam. Genuinely interested in their perspective on Japanese culture.`
+    }
+  },
+  kids: {
+    'あいさつ': {
+      label: 'あいさつ', e: '👋',
+      s: `You are a super fun and cute Japanese friend for a Vietnamese child aged 8-12. Topic: greetings (あいさつ)!
+Always show Japanese in a simple fun way:
+[Japanese] おはよう！
+[Romaji] Ohayou!
+[Nghĩa] Chào buổi sáng!
+Be super energetic and fun. Use simple Japanese. React with excitement. Ask easy questions. Make it feel like a game. Short sentences. Lots of encouragement.`
+    },
+    'どうぶつ': {
+      label: 'どうぶつ', e: '🐾',
+      s: `You are a playful fun Japanese friend for a Vietnamese child aged 8-12. Topic: animals (どうぶつ)!
+Format:
+[Japanese] いぬ！かわいい！
+[Romaji] Inu! Kawaii!
+[Nghĩa] Chó! Dễ thương!
+Teach animal names in Japanese. Make animal sounds. Ask what animals they like. Super fun and childlike energy.`
+    },
+    'いろ': {
+      label: 'いろ', e: '🌈',
+      s: `You are a cheerful fun Japanese friend for a Vietnamese child. Topic: colors (いろ)!
+Format:
+[Japanese] あかい！
+[Romaji] Akai!
+[Nghĩa] Màu đỏ!
+Teach color names in Japanese. Make it a game — ask what color things are. Very fun and energetic. Short responses.`
+    },
+    'たべもの': {
+      label: 'たべもの', e: '🍱',
+      s: `You are a fun Japanese friend for a Vietnamese child. Topic: food (たべもの)!
+Format:
+[Japanese] すしがすきですか？
+[Romaji] Sushi ga suki desu ka?
+[Nghĩa] Bạn có thích sushi không?
+Ask about favorite foods. React with excitement. Compare Japanese food with Vietnamese food. Fun and easy.`
+    },
+    'からだ': {
+      label: 'からだ', e: '🧍',
+      s: `You are an energetic fun Japanese friend for a Vietnamese child. Topic: body parts (からだ)!
+Format:
+[Japanese] あたま、かた、ひざ、ポン！
+[Romaji] Atama, kata, hiza, pon!
+[Nghĩa] Đầu, vai, đầu gối, vỗ!
+Teach body parts like a game (Head Shoulders Knees and Toes in Japanese!). Very fun and silly energy. React with enthusiasm.`
+    }
+  }
+};
+
+// =============================================
+// HIRAGANA / KATAKANA DATA
+// =============================================
+const HIRAGANA = [
+  {c:'あ',r:'a'},{c:'い',r:'i'},{c:'う',r:'u'},{c:'え',r:'e'},{c:'お',r:'o'},
+  {c:'か',r:'ka'},{c:'き',r:'ki'},{c:'く',r:'ku'},{c:'け',r:'ke'},{c:'こ',r:'ko'},
+  {c:'さ',r:'sa'},{c:'し',r:'shi'},{c:'す',r:'su'},{c:'せ',r:'se'},{c:'そ',r:'so'},
+  {c:'た',r:'ta'},{c:'ち',r:'chi'},{c:'つ',r:'tsu'},{c:'て',r:'te'},{c:'と',r:'to'},
+  {c:'な',r:'na'},{c:'に',r:'ni'},{c:'ぬ',r:'nu'},{c:'ね',r:'ne'},{c:'の',r:'no'},
+  {c:'は',r:'ha'},{c:'ひ',r:'hi'},{c:'ふ',r:'fu'},{c:'へ',r:'he'},{c:'ほ',r:'ho'},
+  {c:'ま',r:'ma'},{c:'み',r:'mi'},{c:'む',r:'mu'},{c:'め',r:'me'},{c:'も',r:'mo'},
+  {c:'や',r:'ya'},{c:'ゆ',r:'yu'},{c:'よ',r:'yo'},
+  {c:'ら',r:'ra'},{c:'り',r:'ri'},{c:'る',r:'ru'},{c:'れ',r:'re'},{c:'ろ',r:'ro'},
+  {c:'わ',r:'wa'},{c:'を',r:'wo'},{c:'ん',r:'n'}
+];
+const KATAKANA = [
+  {c:'ア',r:'a'},{c:'イ',r:'i'},{c:'ウ',r:'u'},{c:'エ',r:'e'},{c:'オ',r:'o'},
+  {c:'カ',r:'ka'},{c:'キ',r:'ki'},{c:'ク',r:'ku'},{c:'ケ',r:'ke'},{c:'コ',r:'ko'},
+  {c:'サ',r:'sa'},{c:'シ',r:'shi'},{c:'ス',r:'su'},{c:'セ',r:'se'},{c:'ソ',r:'so'},
+  {c:'タ',r:'ta'},{c:'チ',r:'chi'},{c:'ツ',r:'tsu'},{c:'テ',r:'te'},{c:'ト',r:'to'},
+  {c:'ナ',r:'na'},{c:'ニ',r:'ni'},{c:'ヌ',r:'nu'},{c:'ネ',r:'ne'},{c:'ノ',r:'no'},
+  {c:'ハ',r:'ha'},{c:'ヒ',r:'hi'},{c:'フ',r:'fu'},{c:'ヘ',r:'he'},{c:'ホ',r:'ho'},
+  {c:'マ',r:'ma'},{c:'ミ',r:'mi'},{c:'ム',r:'mu'},{c:'メ',r:'me'},{c:'モ',r:'mo'},
+  {c:'ヤ',r:'ya'},{c:'ユ',r:'yu'},{c:'ヨ',r:'yo'},
+  {c:'ラ',r:'ra'},{c:'リ',r:'ri'},{c:'ル',r:'ru'},{c:'レ',r:'re'},{c:'ロ',r:'ro'},
+  {c:'ワ',r:'wa'},{c:'ヲ',r:'wo'},{c:'ン',r:'n'}
+];
+
+// =============================================
+// BADGES
+// =============================================
+const BADGES = [
+  {id:'first',ico:'🌱',name:'Hajimemashite',desc:'Hoàn thành lượt đầu tiên',check:s=>s.turns>=1},
+  {id:'speak5',ico:'🗣️',name:'Brave Speaker',desc:'Nói 5 câu tiếng Nhật',check:s=>s.goodAns>=5},
+  {id:'streak3',ico:'🔥',name:'Moeru!',desc:'Streak 3 câu liên tiếp',check:s=>s.maxStreak>=3},
+  {id:'star10',ico:'⭐',name:'Hoshi Collector',desc:'Đạt 10 điểm',check:s=>s.totalStars>=10},
+  {id:'kana1',ico:'あ',name:'Hiragana Hero',desc:'Học bảng Hiragana',check:s=>s.kanaPlayed>=10},
+  {id:'star30',ico:'🌟',name:'Kagayaku Hoshi',desc:'Đạt 30 điểm',check:s=>s.totalStars>=30},
+  {id:'streak5',ico:'⚡',name:'Sugoi!',desc:'Streak 5 câu liên tiếp',check:s=>s.maxStreak>=5},
+  {id:'star50',ico:'🏆',name:'Nihongo Master',desc:'Đạt 50 điểm',check:s=>s.totalStars>=50},
+];
+
+// =============================================
+// STATE
+// =============================================
+let KEY='',ELKEY='',OAIKEY='',NAME='',LEVEL='beginner',TOPIC='',HIST=[],lastAI='',inputMode='mic';
+let currentMainMode='conv',currentKanaType='hiragana';
+let isRec=false,mediaRec=null,audioChunks=[];
+let sess={stars:0,streak:0,turns:0,goodAns:0,maxStreak:0,kanaPlayed:0,start:Date.now()};
+let global={totalStars:0,sessions:0,earnedBadges:[],history:[],kanaPlayed:0};
+
+// ElevenLabs Japanese voice — "Yuna" style (female Japanese)
+// Using a Japanese-suitable voice; users can override
+const EL_VOICE_JP = 'cgSgspJ2msm6clMCkdW9'; // "Jessica" — works for JP fallback; update if you have JP voice
+
+function save(){try{localStorage.setItem('bj_key',KEY);localStorage.setItem('bj_elkey',ELKEY);localStorage.setItem('bj_oaikey',OAIKEY);localStorage.setItem('bj_name',NAME);localStorage.setItem('bj_level',LEVEL);localStorage.setItem('bj_global',JSON.stringify(global));}catch(e){}}
+function load(){try{KEY=localStorage.getItem('bj_key')||'';ELKEY=localStorage.getItem('bj_elkey')||'';OAIKEY=localStorage.getItem('bj_oaikey')||'';NAME=localStorage.getItem('bj_name')||'';LEVEL=localStorage.getItem('bj_level')||'beginner';const g=localStorage.getItem('bj_global');if(g)global=JSON.parse(g);}catch(e){}}
+
+function setLevel(lv, btn){
+  LEVEL=lv;
+  document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function startApp(){
+  const k=document.getElementById('apiKey').value.trim();
+  if(!k){alert('Vui lòng nhập Claude API Key!');return}
+  KEY=k;
+  ELKEY=document.getElementById('elKey').value.trim();
+  OAIKEY=document.getElementById('oaiKey').value.trim();
+  const n=document.getElementById('userName').value.trim();
+  NAME=n||'bạn';
+  global.sessions++;
+  save();
+  document.getElementById('setupScreen').style.display='none';
+  document.getElementById('mainScreen').style.display='flex';
+  document.getElementById('tbName').textContent='こんにちは、'+NAME+'！';
+  buildChips();
+  renderBadgesGrid();
+  renderEarnedBadgesRow();
+  initVoice();
+  const first=Object.keys(CURRICULUM[LEVEL])[0];
+  setTopic(first);
+}
+
+function goSettings(){
+  document.getElementById('mainScreen').style.display='none';
+  document.getElementById('setupScreen').style.display='flex';
+  document.getElementById('apiKey').value=KEY;
+  document.getElementById('elKey').value=ELKEY;
+  document.getElementById('oaiKey').value=OAIKEY;
+  document.getElementById('userName').value=NAME==='bạn'?'':NAME;
+  // re-highlight level btn
+  document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('on'));
+  const map={'beginner':0,'n5':1,'n4':2,'kids':3};
+  document.querySelectorAll('.lvl-btn')[map[LEVEL]||0].classList.add('on');
+}
+
+function getCurr(){return CURRICULUM[LEVEL]||CURRICULUM.beginner}
+
+function setMainMode(mode){
+  currentMainMode=mode;
+  document.getElementById('tabConv').classList.toggle('on',mode==='conv');
+  document.getElementById('tabKana').classList.toggle('on',mode==='kana');
+  document.getElementById('kanaPanel').classList.toggle('show',mode==='kana');
+  document.getElementById('chipBar').parentElement.style.display=mode==='conv'?'block':'none';
+  if(mode==='kana'){buildKanaGrid();document.getElementById('chatWrap').style.display='none';}
+  else{document.getElementById('chatWrap').style.display='flex';}
+}
+
+function buildChips(){
+  const bar=document.getElementById('chipBar');bar.innerHTML='';
+  const curr=getCurr();
+  Object.entries(curr).forEach(([key,data],i)=>{
+    const c=document.createElement('div');
+    c.className='chip'+(i===0?' on':'');c.id='chip_'+key;
+    c.textContent=data.e+' '+data.label;
+    c.onclick=()=>setTopic(key);
+    bar.appendChild(c);
+  });
+}
+
+function setTopic(t){
+  TOPIC=t;HIST=[];
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  const ch=document.getElementById('chip_'+t);if(ch)ch.classList.add('on');
+  const curr=getCurr();
+  const lbl=curr[t]?curr[t].label:t;
+  document.getElementById('tbSub').textContent=LEVEL.toUpperCase()+' · '+lbl;
+  document.getElementById('chatWrap').innerHTML='';
+  updateProg(0);
+  askSensei();
+}
+
+// =============================================
+// KANA
+// =============================================
+function setKanaType(type){
+  currentKanaType=type;
+  document.getElementById('ktHira').classList.toggle('on',type==='hiragana');
+  document.getElementById('ktKata').classList.toggle('on',type==='katakana');
+  buildKanaGrid();
+}
+
+function buildKanaGrid(){
+  const grid=document.getElementById('kanaGrid');grid.innerHTML='';
+  const data=currentKanaType==='hiragana'?HIRAGANA:KATAKANA;
+  data.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='kana-card';
+    card.innerHTML='<span class="kc-char">'+item.c+'</span><span class="kc-rom">'+item.r+'</span>';
+    card.onclick=()=>{
+      document.querySelectorAll('.kana-card').forEach(c=>c.classList.remove('active'));
+      card.classList.add('active');
+      speakJP(item.c);
+      sess.kanaPlayed++;global.kanaPlayed++;
+      checkBadges();save();
+    };
+    grid.appendChild(card);
+  });
+}
+
+// =============================================
+// AI CHAT
+// =============================================
+async function askSensei(userMsg){
+  const chat=document.getElementById('chatWrap');
+  if(userMsg){
+    HIST.push({role:'user',content:userMsg});
+    addBubble('user',userMsg);
+  }
+  const typing=document.createElement('div');
+  typing.className='typing';
+  typing.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
+  const curr=getCurr();
+  const sys=(curr[TOPIC]?.s||'You are a friendly Japanese tutor for Vietnamese learners.')+' Do not say the user name in every response.';
+  const msgs=HIST.length?HIST:[{role:'user',content:'Xin chào! Hãy bắt đầu buổi học. Chào ngắn gọn và hỏi câu hỏi đầu tiên phù hợp với chủ đề và trình độ.'}];
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:sys,messages:msgs})
+    });
+    const d=await r.json();
+    try{chat.removeChild(typing)}catch(x){}
+    if(d.error)throw new Error(d.error.message);
+    const reply=d.content[0].text.trim();
+    lastAI=reply;
+    HIST.push({role:'assistant',content:reply});
+    addBubble('ai',reply,true);
+    // Extract Japanese part for TTS
+    const jpMatch=reply.match(/\[Japanese\]\s*(.+?)(?:\n|$)/);
+    const jpText=jpMatch?jpMatch[1].trim():extractJP(reply);
+    if(jpText)speakJP(jpText);
+    updateProg(Math.min(HIST.filter(m=>m.role==='user').length*18,100));
+  }catch(e){
+    try{chat.removeChild(typing)}catch(x){}
+    addBubble('err','⚠️ Lỗi: '+e.message);
+  }
+}
+
+function extractJP(text){
+  // Extract Japanese characters if no explicit tag
+  const match=text.match(/[\u3040-\u30ff\u4e00-\u9faf\uff00-\uffef]+/g);
+  return match?match.join(''):null;
+}
+
+function parseAIBubble(text){
+  // Try to parse [Japanese]/[Romaji]/[Nghĩa] format for rich display
+  const jpM=text.match(/\[Japanese\]\s*(.+?)(?:\n|$)/);
+  const romM=text.match(/\[Romaji\]\s*(.+?)(?:\n|$)/);
+  const nghM=text.match(/\[Nghĩa\]\s*(.+?)(?:\n|$)/);
+  if(jpM){
+    const rest=text.replace(/\[Japanese\].*?(\n|$)/,'').replace(/\[Romaji\].*?(\n|$)/,'').replace(/\[Nghĩa\].*?(\n|$)/,'').trim();
+    return {jp:jpM[1].trim(),rom:romM?romM[1].trim():'',nghia:nghM?nghM[1].trim():'',rest:rest};
+  }
+  return null;
+}
+
+function addBubble(type,text,withSpk){
+  const chat=document.getElementById('chatWrap');
+  const b=document.createElement('div');b.className='bbl '+type;
+  if(type==='ai'&&withSpk){
+    const parsed=parseAIBubble(text);
+    if(parsed){
+      let html='';
+      if(parsed.jp) html+='<span class="jp">'+escHtml(parsed.jp)+'</span>';
+      if(parsed.rom) html+='<span class="rom">'+escHtml(parsed.rom)+'</span>';
+      if(parsed.nghia) html+='<span class="meaning">'+escHtml(parsed.nghia)+'</span>';
+      if(parsed.rest) html+='<span style="display:block;margin-top:6px;font-size:13px;color:var(--ink2)">'+escHtml(parsed.rest)+'</span>';
+      const safe=(parsed.jp||text).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');
+      html+=' <button class="spk-btn" onclick="speakJP(\''+safe+'\')" title="Nghe phát âm">🔊</button>';
+      b.innerHTML=html;
+    }else{
+      const safe=text.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');
+      b.innerHTML=escHtml(text)+' <button class="spk-btn" onclick="speakJP(\''+safe+'\')" title="Nghe phát âm">🔊</button>';
+    }
+  }else{
+    b.textContent=text;
+  }
+  chat.appendChild(b);chat.scrollTop=chat.scrollHeight;
+}
+
+function updateProg(p){
+  document.getElementById('progFill').style.width=p+'%';
+  document.getElementById('progPct').textContent=Math.round(p)+'%';
+}
+
+// =============================================
+// INPUT
+// =============================================
+function setInputMode(m){
+  inputMode=m;
+  document.getElementById('mMic').classList.toggle('on',m==='mic');
+  document.getElementById('mType').classList.toggle('on',m==='type');
+  document.getElementById('micArea').style.display=m==='mic'?'block':'none';
+  document.getElementById('typeArea').style.display=m==='type'?'block':'none';
+}
+
+function sendTyped(){
+  const inp=document.getElementById('typeInput');
+  const val=inp.value.trim();
+  if(!val)return;
+  inp.value='';
+  sess.turns++;document.getElementById('sTurns').textContent=sess.turns;
+  evalResult(val.length>=1,val);
+  askSensei(val);
+}
+
+async function handleMic(){
+  if(OAIKEY){await handleWhisperMic();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){addBubble('err','Cần nhập OpenAI API Key để dùng mic. Hoặc dùng Gõ!');return;}
+  if(isRec){recog&&recog.stop();return;}
+  const recog=new SR();recog.lang='ja-JP';recog.interimResults=false;
+  recog.onstart=()=>{isRec=true;setRecUI(true)};
+  recog.onresult=(e)=>{
+    const said=e.results[0][0].transcript.trim();
+    sess.turns++;document.getElementById('sTurns').textContent=sess.turns;
+    evalResult(said.length>=1,said);
+    askSensei(said);
+  };
+  recog.onerror=()=>{addBubble('err','Lỗi mic!');resetMic()};
+  recog.onend=()=>resetMic();
+  recog.start();
+}
+
+async function handleWhisperMic(){
+  if(isRec){mediaRec&&mediaRec.stop();return;}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks=[];
+    mediaRec=new MediaRecorder(stream);
+    mediaRec.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data)};
+    mediaRec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());await transcribeWhisper(new Blob(audioChunks,{type:'audio/webm'}))};
+    mediaRec.start();isRec=true;setRecUI(true);
+  }catch(e){addBubble('err','Cần cho phép dùng mic!');resetMic()}
+}
+
+function setRecUI(on){
+  const btn=document.getElementById('micBtn');
+  if(on){btn.classList.add('rec');document.getElementById('micLbl').textContent='Đang nghe... nhấn để dừng';}
+  else{btn.classList.remove('rec');document.getElementById('micLbl').textContent='Nhấn để nói';}
+}
+
+function resetMic(){isRec=false;setRecUI(false);}
+
+async function transcribeWhisper(blob){
+  resetMic();
+  document.getElementById('micLbl').textContent='Đang xử lý...';
+  try{
+    const fd=new FormData();
+    fd.append('file',new File([blob],'audio.webm',{type:'audio/webm'}));
+    fd.append('model','whisper-1');
+    fd.append('language','ja');
+    const r=await fetch('https://api.openai.com/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+OAIKEY},body:fd});
+    const d=await r.json();
+    document.getElementById('micLbl').textContent='Nhấn để nói';
+    if(d.error){addBubble('err','Lỗi Whisper: '+d.error.message);return}
+    const said=(d.text||'').trim();
+    if(!said){addBubble('try','Không nghe rõ. Thử lại nhé！');return}
+    sess.turns++;document.getElementById('sTurns').textContent=sess.turns;
+    evalResult(said.length>=1,said);
+    askSensei(said);
+  }catch(e){document.getElementById('micLbl').textContent='Nhấn để nói';addBubble('err','Lỗi: '+e.message)}
+}
+
+// =============================================
+// EVAL & GAMIFICATION
+// =============================================
+const praise=['よくできました！(Rất giỏi!) ⭐','すごいです！(Tuyệt vời!) 🌟','上手ですね！(Giỏi lắm!) ✨','がんばりましたね！(Cố gắng lắm!) 🎉','パーフェクト！(Hoàn hảo!) 🦊'];
+const retry=['もう一度！(Thử lại nhé!) 💪','ドンマイ！(Không sao!) 🙂','もう少し！(Thêm chút nữa!) 🌸'];
+
+function evalResult(isGood,said){
+  if(isGood){
+    sess.stars++;sess.streak++;sess.goodAns++;global.totalStars++;
+    if(sess.streak>sess.maxStreak)sess.maxStreak=sess.streak;
+    document.getElementById('sStars').textContent=sess.stars;
+    document.getElementById('sStreak').textContent=sess.streak;
+    addBubble('good',praise[Math.floor(Math.random()*praise.length)]);
+  }else{
+    sess.streak=0;document.getElementById('sStreak').textContent=0;
+    addBubble('try',retry[Math.floor(Math.random()*retry.length)]);
+  }
+  checkBadges();
+  saveHistory(said,isGood);
+  save();
+  renderEarnedBadgesRow();
+}
+
+function saveHistory(said,good){
+  const now=new Date().toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  global.history.unshift({date:now,topic:TOPIC,said:said,good:good});
+  if(global.history.length>30)global.history=global.history.slice(0,30);
+}
+
+function checkBadges(){
+  const state={turns:sess.turns,goodAns:sess.goodAns,maxStreak:sess.maxStreak,totalStars:global.totalStars,sessions:global.sessions,kanaPlayed:global.kanaPlayed};
+  BADGES.forEach(b=>{
+    if(!global.earnedBadges.includes(b.id)&&b.check(state)){
+      global.earnedBadges.push(b.id);
+      addBubble('good','🏆 Huy hiệu mới: '+b.ico+' '+b.name+'! '+b.desc);
+    }
+  });
+}
+
+function renderBadgesGrid(){
+  const grid=document.getElementById('badgesGrid');grid.innerHTML='';
+  BADGES.forEach(b=>{
+    const earned=global.earnedBadges.includes(b.id);
+    const card=document.createElement('div');card.className='badge-card'+(earned?' earned':'');
+    card.innerHTML='<div class="bc-ico">'+(earned?b.ico:'🔒')+'</div><div class="bc-name">'+b.name+'</div><div class="bc-desc">'+b.desc+'</div>';
+    grid.appendChild(card);
+  });
+}
+
+function renderEarnedBadgesRow(){
+  const row=document.getElementById('earnedBadgesRow');row.innerHTML='';
+  global.earnedBadges.forEach(id=>{
+    const b=BADGES.find(x=>x.id===id);if(!b)return;
+    const chip=document.createElement('div');chip.className='badge-chip earned';chip.textContent=b.ico+' '+b.name;
+    row.appendChild(chip);
+  });
+}
+
+// =============================================
+// QUICK BUTTONS
+// =============================================
+function doHint(){
+  const hints=[
+    '💡 Try: 「はい、そうです」(Hai, sou desu) — Vâng, đúng vậy',
+    '💡 Try: 「わかりません」(Wakarimasen) — Tôi không hiểu',
+    '💡 Try: 「もう一度お願いします」(Mou ichido onegaishimasu) — Nhắc lại nhé',
+    '💡 Try: 「〜が好きです」(~ ga suki desu) — Tôi thích ~',
+    '💡 Try: 「〜は何ですか？」(~ wa nan desu ka?) — ~ là gì?',
+  ];
+  addBubble('hint',hints[Math.floor(Math.random()*hints.length)]);
+}
+function doRepeat(){if(lastAI){const jpM=lastAI.match(/\[Japanese\]\s*(.+?)(?:\n|$)/);speakJP(jpM?jpM[1].trim():lastAI)}}
+function doSkip(){askSensei('わかりません。もっと簡単な質問をお願いします。')}
+
+// =============================================
+// PANELS
+// =============================================
+function showPanel(id){
+  if(id==='parentPanel')fillParentPanel();
+  if(id==='badgesPanel')renderBadgesGrid();
+  document.getElementById(id).classList.add('show');
+}
+function hidePanel(id){document.getElementById(id).classList.remove('show')}
+function fillParentPanel(){
+  const mins=Math.round((Date.now()-sess.start)/60000);
+  const curr=getCurr();
+  document.getElementById('rTopic').textContent=TOPIC?(curr[TOPIC]?.label||TOPIC):'-';
+  document.getElementById('rTurns').textContent=sess.turns;
+  document.getElementById('rGood').textContent=sess.goodAns+' câu';
+  document.getElementById('rStars').textContent=sess.stars+' ⭐';
+  document.getElementById('rMaxStreak').textContent=sess.maxStreak+' 🔥';
+  document.getElementById('rTime').textContent=mins+' phút';
+  document.getElementById('rTotalStars').textContent=global.totalStars+' ⭐';
+  document.getElementById('rSessions').textContent=global.sessions+' buổi';
+  document.getElementById('rBadges').textContent=global.earnedBadges.length+' 🏆';
+  const hl=document.getElementById('historyList');hl.innerHTML='';
+  if(!global.history.length){hl.innerHTML='<p style="color:var(--ink3);font-size:13px;text-align:center;padding:12px">Chưa có lịch sử</p>';return}
+  global.history.slice(0,8).forEach(h=>{
+    const d=document.createElement('div');d.className='history-item';
+    d.innerHTML='<div class="hi-date">'+h.date+' · '+(h.topic||'')+'</div><div class="hi-jp">'+(h.good?'✅':'🔄')+' '+escHtml(h.said)+'</div>';
+    hl.appendChild(d);
+  });
+}
+
+// =============================================
+// TTS
+// =============================================
+function cleanForSpeech(text){
+  return text.replace(/\[Japanese\]/g,'').replace(/\[Romaji\]/g,'').replace(/\[Nghĩa\]/g,'').replace(/\[.+?\]/g,'').replace(/[\u0000-\u001f]/g,' ').replace(/\s{2,}/g,' ').trim();
+}
+
+async function speakElevenLabs(text){
+  if(!ELKEY)return false;
+  const clean=cleanForSpeech(text);
+  if(!clean)return false;
+  try{
+    const r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+EL_VOICE_JP,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','xi-api-key':ELKEY},
+      body:JSON.stringify({text:clean,model_id:'eleven_turbo_v2',voice_settings:{stability:0.55,similarity_boost:0.8,style:0.1,use_speaker_boost:true}})
+    });
+    if(!r.ok)return false;
+    const blob=await r.blob();
+    const url=URL.createObjectURL(blob);
+    const audio=new Audio(url);audio.playbackRate=0.95;audio.play();
+    audio.onended=()=>URL.revokeObjectURL(url);
+    return true;
+  }catch(e){return false}
+}
+
+async function speakJP(text){
+  if(ELKEY){const ok=await speakElevenLabs(text);if(ok)return}
+  if(!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  const clean=cleanForSpeech(text);
+  if(!clean)return;
+  const u=new SpeechSynthesisUtterance(clean);
+  u.lang='ja-JP';u.rate=0.82;u.pitch=1.1;u.volume=1;
+  const vv=window.speechSynthesis.getVoices();
+  const jpV=vv.find(v=>v.lang==='ja-JP'||v.lang==='ja')||vv.find(v=>v.lang.startsWith('ja'));
+  if(jpV)u.voice=jpV;
+  window.speechSynthesis.speak(u);
+}
+
+function initVoice(){
+  if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices()}
+}
+
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// =============================================
+// INIT
+// =============================================
+load();
+if(KEY)document.getElementById('apiKey').value=KEY;
+if(ELKEY)document.getElementById('elKey').value=ELKEY;
+if(OAIKEY)document.getElementById('oaiKey').value=OAIKEY;
+if(NAME&&NAME!=='bạn')document.getElementById('userName').value=NAME;
+const lvMap={'beginner':0,'n5':1,'n4':2,'kids':3};
+document.querySelectorAll('.lvl-btn')[lvMap[LEVEL]||0].classList.add('on');
+document.querySelectorAll('.lvl-btn').forEach((b,i)=>{
+  const lvs=['beginner','n5','n4','kids'];
+  if(lvs[i]===LEVEL)b.classList.add('on');else b.classList.remove('on');
+});
+renderEarnedBadgesRow();
+</script>
+</body>
+</html>
