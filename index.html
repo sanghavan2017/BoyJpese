@@ -764,7 +764,31 @@ async function askSensei(userMsg){
   typing.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
   chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
   const curr=getCurr();
-  const sys=(curr[TOPIC]?.s||'You are a friendly Japanese tutor for Vietnamese learners.')+' Do not say the user name in every response. CRITICAL FORMAT RULE: Always put [Japanese], [Romaji], [Nghĩa] each on a SEPARATE LINE, never on the same line. Example:\n[Japanese] こんにちは\n[Romaji] Konnichiwa\n[Nghĩa] Xin chào';
+  const FORMAT_RULE=`
+
+ABSOLUTE OUTPUT RULE — follow this exactly every single response, no exceptions:
+You must use this exact format for EVERY Japanese sentence or phrase you produce:
+🇯🇵 <Japanese text here>
+📖 <Romaji here>
+🇻🇳 <Vietnamese meaning here>
+
+Rules:
+- Each of the 3 lines above MUST be on its own separate line, starting with the emoji prefix.
+- If you have 2 sentences, repeat the 3-line block twice.
+- Any explanation in Vietnamese goes AFTER the 3-line block, as plain text.
+- NEVER put 🇯🇵/📖/🇻🇳 on the same line.
+- NEVER use [Japanese], [Romaji], [Nghĩa] bracket format.
+
+Example of correct output:
+🇯🇵 こんにちは！
+📖 Konnichiwa!
+🇻🇳 Xin chào!
+Hôm nay chúng ta sẽ học tự giới thiệu nhé!
+🇯🇵 おなまえは なんですか？
+📖 Onamae wa nan desu ka?
+🇻🇳 Tên bạn là gì?`;
+
+  const sys=(curr[TOPIC]?.s||'You are a friendly Japanese tutor for Vietnamese learners.')+FORMAT_RULE;
   const msgs=HIST.length?HIST:[{role:'user',content:'Xin chào! Hãy bắt đầu buổi học. Chào ngắn gọn và hỏi câu hỏi đầu tiên phù hợp với chủ đề và trình độ.'}];
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
@@ -798,42 +822,35 @@ function extractJP(text){
 }
 
 function parseAIBlocks(text){
-  // Split text into segments: tagged blocks + plain text before/between/after
-  // Returns array of {type:'block',jp,rom,nghia} or {type:'plain',text}
+  // Parse emoji-prefixed format: 🇯🇵 / 📖 / 🇻🇳
+  // Each block = 3 consecutive lines with those prefixes
   const results=[];
-  // Normalize tag variants
-  const normalized=text
-    .replace(/\[Vietnamese\]/gi,'[Nghĩa]')
-    .replace(/\[Nghia\]/gi,'[Nghĩa]')
-    .replace(/\[Nghi[aã]\]/gi,'[Nghĩa]');
-
-  // Split on [Japanese] to find each block
-  const parts=normalized.split(/(?=\[Japanese\])/);
-  parts.forEach(part=>{
-    const part2=part.trim();
-    if(!part2)return;
-    const jpM=part2.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Nghĩa\]|$)/);
-    if(!jpM){
-      // plain text segment
-      if(part2)results.push({type:'plain',text:part2});
-      return;
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+  let i=0;
+  while(i<lines.length){
+    if(lines[i].startsWith('🇯🇵')){
+      const jp=lines[i].replace(/^🇯🇵\s*/,'').trim();
+      const rom=(i+1<lines.length&&lines[i+1].startsWith('📖'))?lines[i+1].replace(/^📖\s*/,'').trim():'';
+      const ngh=(i+2<lines.length&&lines[i+2].startsWith('🇻🇳'))?lines[i+2].replace(/^🇻🇳\s*/,'').trim():'';
+      results.push({type:'block',jp,rom,nghia:ngh});
+      i+=(rom?1:0)+(ngh?1:0)+1;
+    } else {
+      // plain text — merge consecutive plain lines
+      let txt=lines[i];
+      results.push({type:'plain',text:txt});
+      i++;
     }
-    const romM=part2.match(/\[Romaji\]\s*([\s\S]+?)(?=\[Nghĩa\]|\[Japanese\]|$)/);
-    const nghM=part2.match(/\[Nghĩa\]\s*([\s\S]+?)(?=\[Japanese\]|$)/);
-    // anything after the last tag is extra explanation
-    const rest=part2
-      .replace(/\[Japanese\][\s\S]*?(?=\[Romaji\]|\[Nghĩa\]|$)/,'')
-      .replace(/\[Romaji\][\s\S]*?(?=\[Nghĩa\]|\[Japanese\]|$)/,'')
-      .replace(/\[Nghĩa\][\s\S]*?(?=\[Japanese\]|$)/,'')
-      .trim();
-    results.push({
-      type:'block',
-      jp:jpM[1].trim(),
-      rom:romM?romM[1].trim():'',
-      nghia:nghM?nghM[1].trim():'',
-      rest:rest
-    });
-  });
+  }
+  // fallback: if no emoji blocks found, try old [Japanese] bracket format
+  if(!results.some(r=>r.type==='block')){
+    const jpM=text.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Ngh|\[Vie|$)/);
+    if(jpM){
+      const romM=text.match(/\[Romaji\]\s*([\s\S]+?)(?=\[Ngh|\[Vie|\[Japanese\]|$)/);
+      const nghM=text.match(/\[Ngh[^\]]*\]\s*([\s\S]+?)(?=\[Japanese\]|\[Romaji\]|$)/);
+      return [{type:'block',jp:jpM[1].trim(),rom:romM?romM[1].trim():'',nghia:nghM?nghM[1].trim():'',rest:''}];
+    }
+    return [{type:'plain',text:text}];
+  }
   return results;
 }
 
@@ -1028,7 +1045,7 @@ function doHint(){
   ];
   addBubble('hint',hints[Math.floor(Math.random()*hints.length)]);
 }
-function doRepeat(){if(lastAI){const jpM=lastAI.match(/\[Japanese\]\s*(.+?)(?:\n|$)/);speakJP(jpM?jpM[1].trim():lastAI)}}
+function doRepeat(){if(lastAI){const blocks=parseAIBlocks(lastAI);const first=blocks.find(b=>b.type==='block');speakJP(first?first.jp:lastAI)}}
 function doSkip(){askSensei('わかりません。もっと簡単な質問をお願いします。')}
 
 // =============================================
