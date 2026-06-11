@@ -780,8 +780,9 @@ async function askSensei(userMsg){
     HIST.push({role:'assistant',content:reply});
     addBubble('ai',reply,true);
     // Extract Japanese part for TTS
-    const jpMatch=reply.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Ngh|\[Vie|$)/);
-    const jpText=jpMatch?jpMatch[1].trim():extractJP(reply);
+    const blocks=parseAIBlocks(reply);
+    const firstBlock=blocks.find(b=>b.type==='block');
+    const jpText=firstBlock?firstBlock.jp:extractJP(reply);
     if(jpText)speakJP(jpText);
     updateProg(Math.min(HIST.filter(m=>m.role==='user').length*18,100));
   }catch(e){
@@ -796,35 +797,70 @@ function extractJP(text){
   return match?match.join(''):null;
 }
 
-function parseAIBubble(text){
-  // Robust parse — works with or without newlines between tags
-  const jpM=text.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Ngh|\[Vie|$)/);
-  const romM=text.match(/\[Romaji\]\s*([\s\S]+?)(?=\[Ngh|\[Vie|\[Japanese\]|$)/);
-  const nghM=text.match(/\[Ngh[^\]]*\]\s*([\s\S]+?)(?=\[Japanese\]|\[Romaji\]|$)/)||text.match(/\[Vietnamese\]\s*([\s\S]+?)(?=\[Japanese\]|\[Romaji\]|$)/);
-  if(jpM){
-    const rest=text
-      .replace(/\[Japanese\][\s\S]*?(?=\[Romaji\]|\[Ngh|\[Vie|$)/,'')
-      .replace(/\[Romaji\][\s\S]*?(?=\[Ngh|\[Vie|\[Japanese\]|$)/,'')
-      .replace(/\[Ngh[^\]]*\][\s\S]*?(?=\[Japanese\]|\[Romaji\]|$)/,'')
-      .replace(/\[Vietnamese\][\s\S]*?(?=\[Japanese\]|\[Romaji\]|$)/,'')
+function parseAIBlocks(text){
+  // Split text into segments: tagged blocks + plain text before/between/after
+  // Returns array of {type:'block',jp,rom,nghia} or {type:'plain',text}
+  const results=[];
+  // Normalize tag variants
+  const normalized=text
+    .replace(/\[Vietnamese\]/gi,'[Nghĩa]')
+    .replace(/\[Nghia\]/gi,'[Nghĩa]')
+    .replace(/\[Nghi[aã]\]/gi,'[Nghĩa]');
+
+  // Split on [Japanese] to find each block
+  const parts=normalized.split(/(?=\[Japanese\])/);
+  parts.forEach(part=>{
+    const part2=part.trim();
+    if(!part2)return;
+    const jpM=part2.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Nghĩa\]|$)/);
+    if(!jpM){
+      // plain text segment
+      if(part2)results.push({type:'plain',text:part2});
+      return;
+    }
+    const romM=part2.match(/\[Romaji\]\s*([\s\S]+?)(?=\[Nghĩa\]|\[Japanese\]|$)/);
+    const nghM=part2.match(/\[Nghĩa\]\s*([\s\S]+?)(?=\[Japanese\]|$)/);
+    // anything after the last tag is extra explanation
+    const rest=part2
+      .replace(/\[Japanese\][\s\S]*?(?=\[Romaji\]|\[Nghĩa\]|$)/,'')
+      .replace(/\[Romaji\][\s\S]*?(?=\[Nghĩa\]|\[Japanese\]|$)/,'')
+      .replace(/\[Nghĩa\][\s\S]*?(?=\[Japanese\]|$)/,'')
       .trim();
-    return {jp:jpM[1].trim(),rom:romM?romM[1].trim():'',nghia:nghM?nghM[1].trim():'',rest:rest};
-  }
-  return null;
+    results.push({
+      type:'block',
+      jp:jpM[1].trim(),
+      rom:romM?romM[1].trim():'',
+      nghia:nghM?nghM[1].trim():'',
+      rest:rest
+    });
+  });
+  return results;
 }
 
 function addBubble(type,text,withSpk){
   const chat=document.getElementById('chatWrap');
   const b=document.createElement('div');b.className='bbl '+type;
   if(type==='ai'&&withSpk){
-    const parsed=parseAIBubble(text);
-    if(parsed){
+    const blocks=parseAIBlocks(text);
+    const hasBlocks=blocks.some(b=>b.type==='block');
+    if(hasBlocks){
       let html='';
-      if(parsed.jp) html+='<span class="jp">'+escHtml(parsed.jp)+'</span>';
-      if(parsed.rom) html+='<span class="rom">'+escHtml(parsed.rom)+'</span>';
-      if(parsed.nghia) html+='<span class="meaning">'+escHtml(parsed.nghia)+'</span>';
-      if(parsed.rest) html+='<span style="display:block;margin-top:6px;font-size:13px;color:var(--ink2)">'+escHtml(parsed.rest)+'</span>';
-      const safe=(parsed.jp||text).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');
+      let firstJP='';
+      blocks.forEach((blk,i)=>{
+        if(blk.type==='block'){
+          if(!firstJP)firstJP=blk.jp;
+          if(i>0&&blocks[i-1].type==='block'){
+            html+='<hr style="border:none;border-top:1px solid var(--cream3);margin:8px 0">';
+          }
+          if(blk.jp) html+='<span class="jp">'+escHtml(blk.jp)+'</span>';
+          if(blk.rom) html+='<span class="rom">'+escHtml(blk.rom)+'</span>';
+          if(blk.nghia) html+='<span class="meaning">'+escHtml(blk.nghia)+'</span>';
+          if(blk.rest) html+='<span style="display:block;margin-top:5px;font-size:13px;color:var(--ink2)">'+escHtml(blk.rest)+'</span>';
+        }else{
+          if(blk.text) html+='<span style="display:block;margin-top:5px;font-size:13px;color:var(--ink2)">'+escHtml(blk.text)+'</span>';
+        }
+      });
+      const safe=(firstJP||text).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');
       html+=' <button class="spk-btn" onclick="speakJP(\''+safe+'\')" title="Nghe phát âm">🔊</button>';
       b.innerHTML=html;
     }else{
