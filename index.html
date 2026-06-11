@@ -764,7 +764,7 @@ async function askSensei(userMsg){
   typing.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
   chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
   const curr=getCurr();
-  const sys=(curr[TOPIC]?.s||'You are a friendly Japanese tutor for Vietnamese learners.')+' Do not say the user name in every response.';
+  const sys=(curr[TOPIC]?.s||'You are a friendly Japanese tutor for Vietnamese learners.')+' Do not say the user name in every response. CRITICAL FORMAT RULE: Always put [Japanese], [Romaji], [Nghĩa] each on a SEPARATE LINE, never on the same line. Example:\n[Japanese] こんにちは\n[Romaji] Konnichiwa\n[Nghĩa] Xin chào';
   const msgs=HIST.length?HIST:[{role:'user',content:'Xin chào! Hãy bắt đầu buổi học. Chào ngắn gọn và hỏi câu hỏi đầu tiên phù hợp với chủ đề và trình độ.'}];
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
@@ -780,7 +780,7 @@ async function askSensei(userMsg){
     HIST.push({role:'assistant',content:reply});
     addBubble('ai',reply,true);
     // Extract Japanese part for TTS
-    const jpMatch=reply.match(/\[Japanese\]\s*(.+?)(?:\n|$)/);
+    const jpMatch=reply.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Ngh|\[Vie|$)/);
     const jpText=jpMatch?jpMatch[1].trim():extractJP(reply);
     if(jpText)speakJP(jpText);
     updateProg(Math.min(HIST.filter(m=>m.role==='user').length*18,100));
@@ -797,12 +797,17 @@ function extractJP(text){
 }
 
 function parseAIBubble(text){
-  // Try to parse [Japanese]/[Romaji]/[Nghĩa] format for rich display
-  const jpM=text.match(/\[Japanese\]\s*(.+?)(?:\n|$)/);
-  const romM=text.match(/\[Romaji\]\s*(.+?)(?:\n|$)/);
-  const nghM=text.match(/\[Nghĩa\]\s*(.+?)(?:\n|$)/);
+  // Robust parse — works with or without newlines between tags
+  const jpM=text.match(/\[Japanese\]\s*([\s\S]+?)(?=\[Romaji\]|\[Ngh|\[Vie|$)/);
+  const romM=text.match(/\[Romaji\]\s*([\s\S]+?)(?=\[Ngh|\[Vie|\[Japanese\]|$)/);
+  const nghM=text.match(/\[Ngh[^\]]*\]\s*([\s\S]+?)(?=\[Japanese\]|\[Romaji\]|$)/)||text.match(/\[Vietnamese\]\s*([\s\S]+?)(?=\[Japanese\]|\[Romaji\]|$)/);
   if(jpM){
-    const rest=text.replace(/\[Japanese\].*?(\n|$)/,'').replace(/\[Romaji\].*?(\n|$)/,'').replace(/\[Nghĩa\].*?(\n|$)/,'').trim();
+    const rest=text
+      .replace(/\[Japanese\][\s\S]*?(?=\[Romaji\]|\[Ngh|\[Vie|$)/,'')
+      .replace(/\[Romaji\][\s\S]*?(?=\[Ngh|\[Vie|\[Japanese\]|$)/,'')
+      .replace(/\[Ngh[^\]]*\][\s\S]*?(?=\[Japanese\]|\[Romaji\]|$)/,'')
+      .replace(/\[Vietnamese\][\s\S]*?(?=\[Japanese\]|\[Romaji\]|$)/,'')
+      .trim();
     return {jp:jpM[1].trim(),rom:romM?romM[1].trim():'',nghia:nghM?nghM[1].trim():'',rest:rest};
   }
   return null;
@@ -861,7 +866,7 @@ function sendTyped(){
 async function handleMic(){
   if(OAIKEY){await handleWhisperMic();return;}
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){addBubble('err','Cần nhập OpenAI API Key để dùng mic. Hoặc dùng Gõ!');return;}
+  if(!SR){addBubble('err','Trình duyệt không hỗ trợ mic. Dùng Chrome hoặc Safari, hoặc chuyển sang Gõ nhé!');return;}
   if(isRec){recog&&recog.stop();return;}
   const recog=new SR();recog.lang='ja-JP';recog.interimResults=false;
   recog.onstart=()=>{isRec=true;setRecUI(true)};
